@@ -1,0 +1,9 @@
+# build artifacts
+bin/
+build/
+target/
+
+# Eclipse configuration files
+.project
+.classpath
+.settings/
