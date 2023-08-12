@@ -12,7 +12,7 @@ import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 import org.matheclipse.core.basic.Config;
 import org.matheclipse.core.basic.ToggleFeature;
-import org.matheclipse.core.builtin.IOFunctions;
+import org.matheclipse.core.eval.Errors;
 import org.matheclipse.core.eval.EvalControlledCallable;
 import org.matheclipse.core.eval.EvalEngine;
 import org.matheclipse.core.eval.ExprEvaluator;
@@ -20,14 +20,13 @@ import org.matheclipse.core.eval.exception.AbortException;
 import org.matheclipse.core.eval.exception.FailedException;
 import org.matheclipse.core.eval.exception.ReturnException;
 import org.matheclipse.core.eval.exception.Validate;
+import org.matheclipse.core.eval.util.SourceCodeProperties;
 import org.matheclipse.core.expression.F;
 import org.matheclipse.core.expression.S;
 import org.matheclipse.core.form.Documentation;
 import org.matheclipse.core.form.output.ASCIIPrettyPrinter3;
 import org.matheclipse.core.form.output.OutputFormFactory;
 import org.matheclipse.core.interfaces.IExpr;
-import org.matheclipse.core.interfaces.IExpr.SourceCodeProperties;
-import org.matheclipse.core.interfaces.IExpr.SourceCodeProperties.Prefix;
 import org.matheclipse.parser.client.ParserConfig;
 import org.matheclipse.parser.client.Scanner;
 import org.matheclipse.parser.client.SyntaxError;
@@ -221,7 +220,7 @@ public class Console {
     if (outputExpression.length() > 0) {
       stdout.print("Out[" + COUNTER + "]= ");
       stdout.flush();
-      stdout.println(IOFunctions.shorten(outputExpression, 1000));
+      stdout.println(Errors.shorten(outputExpression, 1000));
       stdout.flush();
     }
     return outputExpression;
@@ -470,8 +469,6 @@ public class Console {
     return buf.toString();
   }
 
-  static final SourceCodeProperties JAVA_FORM_PROPERTIES =
-      SourceCodeProperties.of(false, false, Prefix.CLASS_NAME, false);
 
   private String printResult(IExpr result) {
     if (result.equals(S.Null)) {
@@ -479,7 +476,8 @@ public class Console {
     }
     switch (fUsedForm) {
       case JAVAFORM:
-        return result.internalJavaString(JAVA_FORM_PROPERTIES, -1, x -> null).toString();
+        return result.internalJavaString(SourceCodeProperties.JAVA_FORM_PROPERTIES, -1, x -> null)
+            .toString();
       case TRADITIONALFORM:
         StringBuilder traditionalBuffer = new StringBuilder();
         fOutputTraditionalFactory.reset(false);
